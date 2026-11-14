@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Bin Duty</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%91%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Noto+Sans+Bengali:wght@500;700&family=Space+Grotesk:wght@600;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#ECF0ED; --surface:#FFFFFF; --sunk:#F3F6F4; --ink:#15201A; --ink-2:#51605A; --line:#D3DCD6;
+  --accent:#17694E; --on-accent:#FFFFFF; --ok:#17694E; --ok-bg:#E1F1E9;
+  --crit:#B3261E; --crit-bg:#FBE6E3; --focus:#0B57D0;
+  --display:'Space Grotesk',system-ui,sans-serif;
+  --body:'Inter','Noto Sans Bengali',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    color-scheme:dark;
+    --bg:#0F1512; --surface:#17201B; --sunk:#1D2822; --ink:#E8F0EB; --ink-2:#9DB0A5; --line:#2A372F;
+    --accent:#46C28F; --on-accent:#06150E; --ok:#46C28F; --ok-bg:#16301F;
+    --crit:#FF8A80; --crit-bg:#34181A; --focus:#8AB4F8;
+  }
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{
+  margin:0; background:var(--bg); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:max(20px,env(safe-area-inset-top,0px)); padding-bottom:max(48px,env(safe-area-inset-bottom,0px));
+}
+[hidden]{display:none!important}
+.wrap{max-width:560px;margin:0 auto;display:grid;gap:22px}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.top h1{margin:0;font:700 22px/1 var(--display);letter-spacing:-.01em}
+.eyebrow{margin:0;font:600 12px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.top .eyebrow{margin-bottom:8px}
+.role{font:600 12px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:var(--ink-2)}
+
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px 20px;display:grid;gap:14px;min-width:0}
+.hero.late{background:var(--crit-bg);border-color:var(--crit)}
+.hero.late .eyebrow{color:var(--crit)}
+.name{margin:0;font:700 clamp(46px,17vw,78px)/.95 var(--display);letter-spacing:-.03em;overflow-wrap:anywhere}
+.sub{margin:0;color:var(--ink-2);font-size:14px}
+.chip{display:inline-flex;align-items:center;gap:8px;width:fit-content;font:600 15px/1 var(--body);padding:10px 14px;border-radius:999px}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}
+.chip.crit{background:var(--crit);color:var(--surface)}
+.chip .em{font-size:20px;line-height:1}
+.nag{margin:0;font:700 20px/1.35 var(--body);color:var(--crit)}
+.note{margin:0;color:var(--ink-2);font-size:14px}
+.confirm{display:grid;gap:10px;background:var(--sunk);border:1px solid var(--line);border-radius:14px;padding:14px}
+.confirm p{margin:0}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.row .btn{flex:1 1 140px}
+
+.btn{font:600 16px/1 var(--body);min-height:52px;padding:0 18px;border-radius:14px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;color:var(--ink);background:none}
+.btn:disabled{opacity:.55;cursor:progress}
+.btn.primary{background:var(--accent);color:var(--on-accent);width:100%;min-height:60px;font-size:17px}
+.btn.soft{background:var(--sunk);border-color:var(--line)}
+.btn.text{min-height:44px;padding:0 6px;color:var(--ink-2);text-decoration:underline;font-weight:500;font-size:14px}
+.btn:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.adminrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;border-top:1px solid var(--line);padding-top:14px}
+.adminrow .btn.soft{flex:1 1 150px}
+
+.board{display:grid;grid-template-columns:1fr 1fr;border-block:1px solid var(--line)}
+.p{padding:16px 8px 16px 0;min-width:0}
+.p+.p{padding-left:18px;padding-right:0;border-left:1px solid var(--line)}
+.ph{display:flex;align-items:center;gap:8px;min-height:24px}
+.ph h3{margin:0;font:700 18px/1 var(--display)}
+.tag{font:600 11px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;background:var(--accent);color:var(--on-accent);border-radius:999px;padding:5px 8px}
+.big{margin:10px 0 12px;font:700 44px/1 var(--display);font-variant-numeric:tabular-nums}
+.big span{font:500 14px var(--body);color:var(--ink-2);margin-left:6px}
+dl{margin:0;display:grid;gap:6px}
+dl div{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+dt{color:var(--ink-2)} dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+dd.bad{color:var(--crit)}
+.foot{margin:10px 0 0;font-size:13px;color:var(--ink-2)}
+
+h2{margin:0 0 6px;font:600 12px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+ol.hist{list-style:none;margin:0;padding:0}
+.hist li{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.hist .n{font:600 14px var(--display);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.hist .who{display:grid;min-width:0}
+.hist .who small{color:var(--ink-2);font-size:13px}
+.res{font:600 14px var(--body);text-align:right}
+.res.ok{color:var(--ok)} .res.bad{color:var(--crit)} .res.wait{color:var(--ink-2)}
+.hist .empty{display:block;color:var(--ink-2);font-size:14px}
+
+details{border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+summary{cursor:pointer;padding:16px;font-weight:600;list-style:none}
+summary::-webkit-details-marker{display:none}
+.adm{display:grid;gap:16px;padding:0 16px 18px}
+.field{display:grid;gap:8px}
+.field label{font-size:14px;font-weight:600}
+.field input{width:100%;min-height:48px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:16px var(--body)}
+.qrbox{background:#fff;padding:10px;border-radius:12px;width:min(240px,100%);border:1px solid var(--line)}
+.qrbox svg{display:block;width:100%;height:auto}
+.mono{font:13px ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere;color:var(--ink-2)}
+.toast{margin:0;min-height:22px;font-size:14px;font-weight:600;color:var(--accent)}
+.skel{background:var(--sunk);border-radius:10px;color:transparent;width:60%}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div><p class="eyebrow">Flat rota</p><h1>Bin Duty</h1></div>
+    <span class="role" id="role" hidden>Admin</span>
+  </header>
+  <section id="hero" class="hero" aria-live="polite"></section>
+  <section aria-label="Scoreboard">
+    <div class="board" id="board"></div>
+    <p class="foot">Days late = full days from the moment a load is opened until the job is done. An open load keeps counting.</p>
+  </section>
+  <section>
+    <h2>History</h2>
+    <ol class="hist" id="hist"></ol>
+    <div class="row" style="margin-top:10px"><button class="btn text" id="more" data-act="more" hidden></button></div>
+  </section>
+  <details id="admin">
+    <summary>Admin</summary>
+    <div class="adm">
+      <div class="field" id="lock">
+        <label for="pin">Admin PIN</label>
+        <input id="pin" type="password" autocomplete="current-password" placeholder="Enter the PIN you set on Netlify">
+        <div class="row"><button class="btn soft" data-act="unlock">Unlock</button></div>
+      </div>
+      <div id="tools" hidden class="adm" style="padding:0">
+        <div class="field">
+          <label>Link for the group and the QR code</label>
+          <p class="mono" id="linkText"></p>
+        </div>
+        <div class="field">
+          <label>Dustbin QR sticker</label>
+          <div class="qrbox" id="qr"></div>
+          <div class="row"><button class="btn soft" data-act="dlqr">Download QR sticker (PNG)</button></div>
+          <p class="note">Print it and stick it on the dustbin. Scanning opens this page.</p>
+        </div>
+        <div class="field" id="reopenArea"></div>
+        <div class="row"><button class="btn text" data-act="lock">Lock admin on this phone</button></div>
+      </div>
+    </div>
+  </details>
+  <p class="toast" id="toast" role="status"></p>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+(function(){
+'use strict';
+var DAY=864e5, TZ='Asia/Dhaka';
+var NAME={kamran:'Kamran',abid:'Abid'};
+var BN='কি ভাই, দায়িতবান কবে হবেন?';
+var S={loads:[],off:0,got:false,err:'',timedOut:false,pin:'',admin:false,confirm:'',showAll:false,busy:false,qrFor:null,ct:0,tt:0};
+try{S.pin=localStorage.getItem('binpin')||''}catch(e){}
+
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function nm(k){return NAME[k]||esc(k)}
+function plural(n,w){return n+' '+w+(n===1?'':'s')}
+function now(){return Date.now()+S.off}
+function fmt(ms){return new Date(ms).toLocaleString('en-GB',{timeZone:TZ,weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit',hour12:true})}
+function fmtDay(ms){return new Date(ms).toLocaleDateString('en-GB',{timeZone:TZ,weekday:'short',day:'numeric',month:'short'})}
+function dur(ms){var m=Math.max(0,Math.floor(ms/6e4)),d=Math.floor(m/1440),h=Math.floor(m%1440/60);m=m%60;return d?d+'d '+h+'h':h?h+'h '+m+'m':m+'m'}
+function late(l,n){return Math.max(0,Math.floor(((l.doneAt||n)-l.createdAt)/DAY))}
+function link(){return location.origin+'/'}
+
+function derive(){
+  var L=S.loads, last=L.length?L[L.length-1]:null;
+  return {last:last,pending:last&&!last.doneAt?last:null,next:last?(last.who==='kamran'?'abid':'kamran'):'kamran'};
+}
+function stats(n){
+  var s={kamran:{done:0,ontime:0,late:0},abid:{done:0,ontime:0,late:0}};
+  S.loads.forEach(function(l){
+    var t=s[l.who]; if(!t)return;
+    var ld=late(l,n);
+    if(l.doneAt){t.done++; if(!ld)t.ontime++;}
+    t.late+=ld;
+  });
+  return s;
+}
+function waText(p){return 'Bin load #'+p.n+' is ready. '+nm(p.who)+', it is your turn. After you empty it, tap done here: '+link()}
+
+/* ---------- QR ---------- */
+function qrData(t){
+  var q=qrcode(0,'M'); q.addData(t); q.make();
+  var n=q.getModuleCount(), m=4, d='';
+  for(var r=0;r<n;r++)for(var c=0;c<n;c++)if(q.isDark(r,c))d+='M'+(c+m)+' '+(r+m)+'h1v1h-1z';
+  return {d:d,size:n+2*m};
+}
+function qrInline(t){
+  try{
+    var o=qrData(t);
+    return '<svg viewBox="0 0 '+o.size+' '+o.size+'" role="img" aria-label="QR code that opens the bin duty page" shape-rendering="crispEdges"><rect width="'+o.size+'" height="'+o.size+'" fill="#fff"/><path d="'+o.d+'" fill="#000"/></svg>';
+  }catch(e){return '<p class="note" style="color:#333">Could not draw the QR code.</p>'}
+}
+function stickerSvg(t){
+  var o=qrData(t), sc=480/o.size;
+  var f='font-family="Arial,Helvetica,sans-serif" text-anchor="middle"';
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="820" viewBox="0 0 640 820">'
+   +'<rect width="640" height="820" fill="#fff"/>'
+   +'<rect x="12" y="12" width="616" height="796" rx="28" fill="none" stroke="#111" stroke-width="6"/>'
+   +'<text x="320" y="100" '+f+' font-size="50" font-weight="700" fill="#111">BIN EMPTIED?</text>'
+   +'<text x="320" y="148" '+f+' font-size="28" fill="#333">Scan, then tap I did it</text>'
+   +'<g transform="translate(80 190) scale('+sc+')" shape-rendering="crispEdges"><path d="'+o.d+'" fill="#000"/></g>'
+   +'<text x="320" y="742" '+f+' font-size="26" fill="#333">Bin Duty rota</text>'
+   +'</svg>';
+}
+function downloadQr(){
+  if(typeof qrcode!=='function'){toast('The QR library did not load. Reload the page.');return}
+  var svg; try{svg=stickerSvg(link())}catch(e){toast('Could not build the QR file.');return}
+  var url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
+  var img=new Image();
+  img.onload=function(){
+    var c=document.createElement('canvas'); c.width=1280; c.height=1640;
+    var x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(img,0,0,c.width,c.height);
+    URL.revokeObjectURL(url);
+    c.toBlob(function(b){
+      if(!b){toast('Could not build the PNG.');return}
+      var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='bin-duty-qr.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){URL.revokeObjectURL(a.href)},2000);
+    },'image/png');
+  };
+  img.onerror=function(){URL.revokeObjectURL(url);toast('Could not build the PNG.')};
+  img.src=url;
+}
+
+/* ---------- render ---------- */
+function render(){
+  var n=now();
+  $('role').hidden=!S.admin;
+  renderHero(n); renderBoard(n); renderHist(n); renderAdmin();
+}
+
+function renderHero(n){
+  var el=$('hero'), d=derive(), dis=S.busy?' disabled':'';
+  if(!S.got){
+    el.className='hero';
+    if(S.err){
+      el.innerHTML='<p class="eyebrow">Whose turn</p><p class="name">?</p><p class="note">Cannot reach the server ('+esc(S.err)+').</p><button class="btn soft" data-act="retry">Try again</button>';
+    }else{
+      el.innerHTML='<p class="eyebrow">Whose turn</p><p class="name skel">Loading</p><p class="note">'+(S.timedOut?'Still loading. Check your internet connection.':'Checking whose turn it is...')+'</p>';
+    }
+    return;
+  }
+  var h;
+  if(d.pending){
+    var p=d.pending, age=n-p.createdAt, ld=late(p,n);
+    el.className='hero'+(ld>=1?' late':'');
+    h='<p class="eyebrow">Turn now · Load #'+p.n+'</p><p class="name">'+nm(p.who)+'</p>';
+    h+='<p class="sub">Opened '+fmt(p.createdAt)+' · open for '+dur(age)+'</p>';
+    h+= ld>=1
+      ? '<span class="chip crit"><span class="em" aria-hidden="true">'+(ld>=3?'😡':'😠')+'</span>'+plural(ld,'day')+' late</span><p class="nag" lang="bn">'+BN+'</p>'
+      : '<span class="chip ok">On time · '+dur(DAY-age)+' left</span>';
+    if(S.confirm==='done'){
+      h+='<div class="confirm"><p><strong>'+nm(p.who)+'</strong> emptied the bin?</p><div class="row"><button class="btn primary" data-act="done"'+dis+'>Yes, it is done</button><button class="btn soft" data-act="cancel">Cancel</button></div></div>';
+    }else{
+      h+='<button class="btn primary" data-act="ask"'+dis+'>I did it, bin emptied</button>';
+    }
+    if(S.admin){
+      h+='<div class="adminrow"><a class="btn soft" href="https://wa.me/?text='+encodeURIComponent(waText(p))+'" target="_blank" rel="noopener">Send on WhatsApp</a><button class="btn soft" data-act="copy">Copy message</button>';
+      h+= S.confirm==='remove'
+        ? '<button class="btn soft" data-act="remove-yes"'+dis+'>Yes, remove load #'+p.n+'</button><button class="btn text" data-act="cancel">Cancel</button>'
+        : '<button class="btn text" data-act="remove">Remove this load</button>';
+      h+='</div>';
+    }
+  }else{
+    el.className='hero';
+    h='<p class="eyebrow">Next turn</p><p class="name">'+nm(d.next)+'</p>';
+    if(d.last){
+      var dl=late(d.last,n);
+      h+='<p class="sub">Load #'+d.last.n+' was emptied by '+nm(d.last.who)+' on '+fmtDay(d.last.doneAt)+(dl?', '+plural(dl,'day')+' late.':', on time.')+'</p>';
+    }else{
+      h+='<p class="sub">No loads yet. Kamran goes first, then Abid, then back to Kamran.</p>';
+    }
+    h+= S.admin
+      ? '<button class="btn primary" data-act="new"'+dis+'>New load ready for '+nm(d.next)+'</button>'
+      : '<p class="note">No load is waiting. Omar will send the link when the next one is ready.</p>';
+  }
+  el.innerHTML=h;
+}
+
+function renderBoard(n){
+  var s=stats(n), d=derive();
+  $('board').innerHTML=['kamran','abid'].map(function(k){
+    var t=s[k], turn=d.pending?d.pending.who===k:d.next===k;
+    return '<div class="p"><div class="ph"><h3>'+NAME[k]+'</h3>'+(turn?'<span class="tag">'+(d.pending?'Now':'Next')+'</span>':'')+'</div>'
+      +'<p class="big">'+t.done+'<span>done</span></p>'
+      +'<dl><div><dt>On time</dt><dd>'+t.ontime+'</dd></div><div><dt>Days late</dt><dd class="'+(t.late?'bad':'')+'">'+t.late+'</dd></div></dl></div>';
+  }).join('');
+}
+
+function renderHist(n){
+  var ol=$('hist'), all=S.loads.slice().reverse(), more=$('more');
+  if(!S.got){ol.innerHTML='';more.hidden=true;return}
+  if(!all.length){ol.innerHTML='<li><span class="empty">No loads yet. Each one opened will be listed here.</span></li>';more.hidden=true;return}
+  var rows=S.showAll?all:all.slice(0,8);
+  ol.innerHTML=rows.map(function(l){
+    var ld=late(l,n), cls, txt;
+    if(l.doneAt){cls=ld?'bad':'ok'; txt=ld?'<span aria-hidden="true">😠</span> '+plural(ld,'day')+' late':'On time';}
+    else{cls=ld?'bad':'wait'; txt=ld?'Open · '+plural(ld,'day')+' late':'Open';}
+    return '<li><span class="n">#'+l.n+'</span><span class="who"><b>'+nm(l.who)+'</b><small>Opened '+fmtDay(l.createdAt)+'</small></span><span class="res '+cls+'">'+txt+'</span></li>';
+  }).join('');
+  more.hidden=all.length<=8;
+  more.textContent=S.showAll?'Show fewer':'Show all '+all.length;
+}
+
+function renderAdmin(){
+  $('lock').hidden=S.admin; $('tools').hidden=!S.admin;
+  if(!S.admin)return;
+  var l=link();
+  $('linkText').textContent=l;
+  if(S.qrFor!==l){
+    S.qrFor=l;
+    $('qr').innerHTML= typeof qrcode==='function'?qrInline(l):'<p class="note" style="color:#333">The QR library did not load. Reload the page.</p>';
+  }
+  var d=derive(), ra=$('reopenArea'), dis=S.busy?' disabled':'';
+  if(d.last&&d.last.doneAt){
+    ra.innerHTML= S.confirm==='reopen'
+      ? '<label>Reopen load #'+d.last.n+'?</label><div class="row"><button class="btn soft" data-act="reopen-yes"'+dis+'>Yes, reopen it</button><button class="btn text" data-act="cancel">Cancel</button></div>'
+      : '<label>Someone tapped done by mistake?</label><div class="row"><button class="btn soft" data-act="reopen">Reopen load #'+d.last.n+'</button></div>';
+  }else{ra.innerHTML=''}
+}
+
+/* ---------- server ---------- */
+function api(path,method){
+  var h={}; if(S.pin)h['x-admin-pin']=S.pin;
+  return fetch('/api/'+path,{method:method||'GET',headers:h,cache:'no-store'}).then(function(r){
+    return r.json().catch(function(){return {error:'Bad response from server'}}).then(function(j){
+      if(!r.ok){var e=new Error(j.error||('Error '+r.status)); e.status=r.status; e.data=j; throw e}
+      return j;
+    });
+  });
+}
+function setState(j){
+  if(j&&j.loads){S.loads=j.loads; S.off=j.now-Date.now(); S.got=true; S.err=''}
+}
+function refresh(){
+  return api('state').then(setState).catch(function(e){if(!S.got)S.err=e.message||'offline'}).then(render);
+}
+function toast(m){var t=$('toast');t.textContent=m;clearTimeout(S.tt);S.tt=setTimeout(function(){t.textContent=''},6000)}
+function lockOut(){S.admin=false;S.pin='';try{localStorage.removeItem('binpin')}catch(e){}}
+function fail(e){
+  if(e&&e.data)setState(e.data);
+  if(e&&e.status===401){lockOut();toast('Wrong PIN. Unlock admin again.');return}
+  toast((e&&e.message)||'Something went wrong. Try again.');
+}
+function run(path,ok){
+  if(S.busy)return;
+  S.busy=true; S.confirm=''; render();
+  api(path,'POST').then(function(j){setState(j);toast(ok)}).catch(fail).then(function(){S.busy=false;render()});
+}
+function arm(){clearTimeout(S.ct);S.ct=setTimeout(function(){S.confirm='';render()},8000)}
+function copyMsg(){
+  var p=derive().pending; if(!p)return;
+  try{navigator.clipboard.writeText(waText(p)).then(function(){toast('Message copied.')},function(){toast('Copy is blocked here. Use the WhatsApp button.')})}
+  catch(e){toast('Copy is blocked here. Use the WhatsApp button.')}
+}
+function unlock(){
+  var v=$('pin').value.trim(); if(!v){toast('Enter the PIN.');return}
+  S.pin=v;
+  api('auth','POST').then(function(){
+    S.admin=true; try{localStorage.setItem('binpin',v)}catch(e){}
+    $('pin').value=''; toast('Admin unlocked.');
+  }).catch(function(e){S.pin='';S.admin=false;toast(e.message||'Could not unlock.')}).then(render);
+}
+function act(a){
+  if(a==='ask'){S.confirm='done';arm();render();return}
+  if(a==='remove'){S.confirm='remove';arm();render();return}
+  if(a==='reopen'){S.confirm='reopen';arm();render();return}
+  if(a==='cancel'){S.confirm='';render();return}
+  if(a==='done')return run('done','Marked done. Thanks.');
+  if(a==='new')return run('new','New load opened. Send the link to the group.');
+  if(a==='remove-yes')return run('remove','Load removed.');
+  if(a==='reopen-yes')return run('reopen','Load reopened.');
+  if(a==='copy')return copyMsg();
+  if(a==='dlqr')return downloadQr();
+  if(a==='unlock')return unlock();
+  if(a==='lock'){lockOut();render();return}
+  if(a==='retry'){S.err='';render();refresh();return}
+  if(a==='more'){S.showAll=!S.showAll;render()}
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-act]'); if(!b||b.disabled)return;
+  act(b.getAttribute('data-act'));
+});
+$('pin').addEventListener('keydown',function(e){if(e.key==='Enter')unlock()});
+
+/* ---------- boot ---------- */
+render();
+setTimeout(function(){if(!S.got){S.timedOut=true;render()}},10000);
+setInterval(render,60000);
+setInterval(function(){if(!document.hidden)refresh()},60000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh()});
+if(S.pin){
+  api('auth','POST').then(function(){S.admin=true}).catch(function(e){if(e.status===401)lockOut()}).then(render);
+}
+refresh();
+})();
+</script>
+</body>
+</html>
